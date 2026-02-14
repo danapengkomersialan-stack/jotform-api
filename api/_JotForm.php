@@ -135,7 +135,7 @@ class JotForm {
             }
         }
 
-        curl_close($ch);
+
 
         if ($this->outputType == 'json') {
             if (isset($result_obj['content'])) {

@@ -1,5 +1,8 @@
 <?php
 
+error_reporting(E_ALL & ~E_DEPRECATED);
+ob_start();
+
 require_once __DIR__ . '/_JotForm.php';
 
 function cors_headers(): void {
