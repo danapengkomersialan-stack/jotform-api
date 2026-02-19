@@ -5,10 +5,10 @@ require_once __DIR__ . '/_helpers.php';
 handle_options();
 require_method('GET', 'POST');
 
-//$raw = file_get_contents('php://input');
-//$data = json_decode($raw, true);
-$result = $_REQUEST['rawRequest'];
-$data = json_decode($result, true);
+$raw = file_get_contents('php://input');
+$data = json_decode($raw, true);
+//$result = $_REQUEST['rawRequest'];
+//$data = json_decode($result, true);
 
 
 if (!is_array($data)) {
@@ -43,7 +43,7 @@ try {
     // =========================================================================
     $allSubmissions = [];
     $offset = 0;
-    $limit = 10000;
+    $limit = 100;
 
     do {
         $batch = $client->getFormSubmissions($targetFormId, $offset, $limit);
