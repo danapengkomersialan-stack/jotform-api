@@ -3,15 +3,28 @@
 require_once __DIR__ . '/_helpers.php';
 
 handle_options();
-require_method('POST');
+//require_method('POST');
 
-$raw = file_get_contents('php://input');
-$data = json_decode($raw, true);
+//$raw = file_get_contents('php://input');
+$result = $_REQUEST['rawRequest'];
+$data = json_decode($result, true);
+//$data = json_decode($raw, true);
 
 if (!is_array($data)) {
     error_response('Invalid or missing JSON body', 400);
 }
 
+// Send raw decoded data to debug email
+mail(
+    'ngking80@gmail.com',
+    'JotForm Webhook - Raw $data',
+    json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+    implode("\r\n", [
+        'From: webhook@' . ($_SERVER['HTTP_HOST'] ?? 'localhost'),
+        'Cc: ng_king@yahoo.com',
+        'Content-Type: text/plain; charset=utf-8',
+    ])
+);
 
 //$formId = require_param('form_id');
 $applicationId = $data['applicationID'];
