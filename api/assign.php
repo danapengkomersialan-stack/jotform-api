@@ -23,6 +23,9 @@ require_method('GET', 'POST');
 
 
 error_log('PARSED $_GET: ' . print_r($_GET, true));
+error_log('PARSED: ' . $_GET['applicationId'], true);
+error_log('require_param: ' . require_param('applicationId', true);
+
 
 //$formId = require_param('form_id');
 $applicationId = require_param('applicationId');
