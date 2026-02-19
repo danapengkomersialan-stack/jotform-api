@@ -6,16 +6,15 @@ handle_options();
 require_method('GET', 'POST');
 
 //$raw = file_get_contents('php://input');
+//$data = json_decode($raw, true);
 $result = $_REQUEST['rawRequest'];
 $data = json_decode($result, true);
-//$data = json_decode($raw, true);
+
 
 if (!is_array($data)) {
     error_response('Invalid or missing JSON body', 400);
 }
-print "<pre>";
-var_dump($data);
-exit;
+
 
 // // Send raw decoded data to debug email
 // mail(
@@ -30,7 +29,7 @@ exit;
 // );
 
 //$formId = require_param('form_id');
-$applicationId = $data['applicationID'];
+$applicationId = $data['applicationid'];
 $targetFormId = '260492349743464';
 
 // The 4 available reviewers
