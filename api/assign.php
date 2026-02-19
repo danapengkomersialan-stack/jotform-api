@@ -5,15 +5,25 @@ require_once __DIR__ . '/_helpers.php';
 handle_options();
 require_method('GET', 'POST');
 
-$raw = file_get_contents('php://input');
-$data = json_decode($raw, true);
-//$result = $_REQUEST['rawRequest'];
-//$data = json_decode($result, true);
+error_log('CONTENT TYPE: ' . ($_SERVER['CONTENT_TYPE'] ?? 'none'));
+error_log('RAW POST: ' . file_get_contents('php://input'));
+error_log('PARSED $_POST: ' . print_r($_POST, true));
 
+$data = $_POST;
 
-if (!is_array($data)) {
-    error_response('Invalid or missing JSON body', 400);
+// Optional: if using Jotform rawRequest wrapper
+if (isset($data['rawRequest'])) {
+    $data = json_decode($data['rawRequest'], true);
 }
+
+if (!is_array($data) || empty($data)) {
+    error_response('Invalid or missing request body', 400);
+}
+
+
+// if (!is_array($data)) {
+//     error_response('Invalid or missing JSON body', 400);
+// }
 
 
 // // Send raw decoded data to debug email
