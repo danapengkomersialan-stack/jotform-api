@@ -13,18 +13,21 @@ $data = json_decode($result, true);
 if (!is_array($data)) {
     error_response('Invalid or missing JSON body', 400);
 }
+print "<pre>";
+var_dump($data);
+exit;
 
-// Send raw decoded data to debug email
-mail(
-    'ngking80@gmail.com',
-    'JotForm Webhook - Raw $data',
-    json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
-    implode("\r\n", [
-        'From: webhook@' . ($_SERVER['HTTP_HOST'] ?? 'localhost'),
-        'Cc: ng_king@yahoo.com',
-        'Content-Type: text/plain; charset=utf-8',
-    ])
-);
+// // Send raw decoded data to debug email
+// mail(
+//     'ngking80@gmail.com',
+//     'JotForm Webhook - Raw $data',
+//     json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+//     implode("\r\n", [
+//         'From: webhook@' . ($_SERVER['HTTP_HOST'] ?? 'localhost'),
+//         'Cc: ng_king@yahoo.com',
+//         'Content-Type: text/plain; charset=utf-8',
+//     ])
+// );
 
 //$formId = require_param('form_id');
 $applicationId = $data['applicationID'];
