@@ -3,17 +3,19 @@
 require_once __DIR__ . '/_helpers.php';
 
 handle_options();
-require_method('GET');
+require_method('POST');
 
-$data = json_decode($_REQUEST['rawRequest'], true);
-print "<pre>";
-print_r($data);
-file_put_contents('webhook_log.txt', print_r($data, true), FILE_APPEND);
-exit;
+$raw = file_get_contents('php://input');
+$data = json_decode($raw, true);
 
-$formId = require_param('form_id');
-$applicationId = require_param('application_id');
-$targetFormId = '260193165468058';
+if (!is_array($data)) {
+    error_response('Invalid or missing JSON body', 400);
+}
+
+
+//$formId = require_param('form_id');
+$applicationId = $data['applicationID'];
+$targetFormId = '260492349743464';
 
 // The 4 available reviewers
 $reviewers = ['alya@mranti.my', 'muhammadhafiz.h@mranti.my', 'badzlan.khan@mranti.my', 'sharienna@mranti.my'];
