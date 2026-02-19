@@ -5,41 +5,30 @@ require_once __DIR__ . '/_helpers.php';
 handle_options();
 require_method('GET', 'POST');
 
-error_log('CONTENT TYPE: ' . ($_SERVER['CONTENT_TYPE'] ?? 'none'));
-error_log('RAW POST: ' . file_get_contents('php://input'));
-error_log('PARSED $_POST: ' . print_r($_POST, true));
+// error_log('CONTENT TYPE: ' . ($_SERVER['CONTENT_TYPE'] ?? 'none'));
+// error_log('RAW POST: ' . file_get_contents('php://input'));
+// error_log('PARSED $_POST: ' . print_r($_POST, true));
 
-$data = $_POST;
+// $data = $_POST;
 
-// Optional: if using Jotform rawRequest wrapper
-if (isset($data['rawRequest'])) {
-    $data = json_decode($data['rawRequest'], true);
-}
+// // Optional: if using Jotform rawRequest wrapper
+// if (isset($data['rawRequest'])) {
+//     $data = json_decode($data['rawRequest'], true);
+// }
 
-if (!is_array($data) || empty($data)) {
-    error_response('Invalid or missing request body', 400);
-}
-
-
-// if (!is_array($data)) {
-//     error_response('Invalid or missing JSON body', 400);
+// if (!is_array($data) || empty($data)) {
+//     error_response('Invalid or missing request body', 400);
 // }
 
 
-// // Send raw decoded data to debug email
-// mail(
-//     'ngking80@gmail.com',
-//     'JotForm Webhook - Raw $data',
-//     json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
-//     implode("\r\n", [
-//         'From: webhook@' . ($_SERVER['HTTP_HOST'] ?? 'localhost'),
-//         'Cc: ng_king@yahoo.com',
-//         'Content-Type: text/plain; charset=utf-8',
-//     ])
-// );
+
+error_log('PARSED $_GET: ' . print_r($_GET, true));
 
 //$formId = require_param('form_id');
-$applicationId = $data['applicationid'];
+$applicationId = require_param('applicationId');
+
+print $applicationId;
+exit;
 $targetFormId = '260492349743464';
 
 // The 4 available reviewers
