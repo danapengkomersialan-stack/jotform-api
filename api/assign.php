@@ -3,7 +3,7 @@
 require_once __DIR__ . '/_helpers.php';
 
 handle_options();
-//require_method('POST');
+require_method('GET', 'POST');
 
 //$raw = file_get_contents('php://input');
 $result = $_REQUEST['rawRequest'];
