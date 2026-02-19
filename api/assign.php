@@ -26,9 +26,6 @@ error_log('PARSED $_GET: ' . print_r($_GET, true));
 
 //$formId = require_param('form_id');
 $applicationId = require_param('applicationId');
-
-print $applicationId;
-exit;
 $targetFormId = '260492349743464';
 
 // The 4 available reviewers
