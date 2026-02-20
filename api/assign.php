@@ -68,12 +68,7 @@ try {
             
             //if (stripos($answer['text'] ?? '', 'Application ID') !== false) $appIdQid = $qid;
         }
-        print "<pre>";
-        print "review1: ".$answer['name']." ".$reviewer1Qid."\n"; 
-        print "review2: ".$answer['name']." ".$reviewer2Qid."\n";
-        print "appstatus: ".$answer['name']." ".$appStatusQid."\n";
-        print "appId: ".$answer['name']." ".$appIdQid."\n";
-        exit;
+       
         // Check if this is our target submission
         if ($appIdQid !== null) {
             $val = $sub['answers'][$appIdQid]['answer'] ?? '';
@@ -99,9 +94,6 @@ try {
     if (!$targetSubmission) {
         error_response("No submission found in main table with Application ID = {$applicationId}", 404);
     }
-
-    print "king";
-    exit;
 
     // =========================================================================
     // 3. Verify the target submission has applicationStatus = "Submitted"
