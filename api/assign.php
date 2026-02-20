@@ -39,12 +39,6 @@ try {
     $offset = 0;
     $limit = 100;
 
-    $batch = $client->getFormSubmissions($targetFormId, $offset, $limit);
-    $allSubmissions = array_merge($allSubmissions, $batch);
-
-    
-   
-
     do {
         $batch = $client->getFormSubmissions($targetFormId, $offset, $limit);
         $allSubmissions = array_merge($allSubmissions, $batch);
@@ -59,26 +53,26 @@ try {
     $appStatusQid = null;
     $appIdQid = null;
     $targetSubmission = null;
-    print "<pre>";
-print_r($allSubmissions);
-exit;
+    
     // First pass: find the target submission and field QIDs
     foreach ($allSubmissions as $sub) {
         if (!isset($sub['answers'])) continue;
 
         foreach ($sub['answers'] as $qid => $answer) {
-            $text = strtolower(trim($answer['text'] ?? ''));
+            $name = strtolower(trim($answer['name'] ?? ''));
 
-            if ($text === 'reviewer1') $reviewer1Qid = $qid;
-            if ($text === 'reviewer2') $reviewer2Qid = $qid;
-            if ($text === 'applicationstatus') $appStatusQid = $qid;
-            if (stripos($answer['text'] ?? '', 'Application ID') !== false) $appIdQid = $qid;
+            if ($name === 'reviewer1') $reviewer1Qid = $qid;
+            if ($name === 'reviewer2') $reviewer2Qid = $qid;
+            if ($name === 'applicationstatus') $appStatusQid = $qid;
+            if ($name === 'applicationid') $appIdQid = $qid;
+            
+            //if (stripos($answer['text'] ?? '', 'Application ID') !== false) $appIdQid = $qid;
         }
         print "<pre>";
-        print "review1: ".$answer['text']." ".$reviewer1Qid."\n"; 
-        print "review2: ".$answer['text']." ".$reviewer2Qid."\n";
-        print "appstatus: ".$answer['text']." ".$appStatusQid."\n";
-        print "appId: ".$answer['text']." ".$appIdQid."\n";
+        print "review1: ".$answer['name']." ".$reviewer1Qid."\n"; 
+        print "review2: ".$answer['name']." ".$reviewer2Qid."\n";
+        print "appstatus: ".$answer['name']." ".$appStatusQid."\n";
+        print "appId: ".$answer['name']." ".$appIdQid."\n";
         exit;
         // Check if this is our target submission
         if ($appIdQid !== null) {
