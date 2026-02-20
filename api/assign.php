@@ -21,8 +21,6 @@ require_method('GET', 'POST');
 // }
 
 
-
-//$formId = require_param('form_id');
 $applicationId = require_param('applicationId');
 $targetFormId = '260492349743464';
 
@@ -137,7 +135,7 @@ try {
 
         // Only count reviewers from submissions with applicationStatus = "Submitted"
         $subStatus = trim($sub['answers'][$appStatusQid]['answer'] ?? '');
-        if (strcasecmp($subStatus, 'Submitted') !== 0) continue;
+        if (strcasecmp($subStatus, 'already_assigned') !== 0) continue;
 
         $r1 = trim($sub['answers'][$reviewer1Qid]['answer'] ?? '');
         $r2 = trim($sub['answers'][$reviewer2Qid]['answer'] ?? '');
@@ -166,17 +164,17 @@ try {
         $assignReviewer2 = $sorted[1];
     } elseif ($assignReviewer1 === '') {
         // Only reviewer1 is empty: pick the least assigned who isn't reviewer2
-        foreach ($reviewerCounts as $name => $count) {
-            if ($name !== $assignReviewer2) {
-                $assignReviewer1 = $name;
+        foreach ($reviewerCounts as $r1name => $count) {
+            if ($r1name !== $assignReviewer2) {
+                $assignReviewer1 = $r1name;
                 break;
             }
         }
     } elseif ($assignReviewer2 === '') {
         // Only reviewer2 is empty: pick the least assigned who isn't reviewer1
-        foreach ($reviewerCounts as $name => $count) {
-            if ($name !== $assignReviewer1) {
-                $assignReviewer2 = $name;
+        foreach ($reviewerCounts as $r2name => $count) {
+            if ($r2name !== $assignReviewer1) {
+                $assignReviewer2 = $r2name;
                 break;
             }
         }
