@@ -71,7 +71,12 @@ try {
             if ($text === 'applicationstatus') $appStatusQid = $qid;
             if (stripos($answer['text'] ?? '', 'Application ID') !== false) $appIdQid = $qid;
         }
-
+        print "<pre>";
+        print $reviewer1Qid."\n"; 
+        print $reviewer2Qid."\n";
+        print $appStatusQid."\n";
+        print $appIdQid."\n";
+        exit;
         // Check if this is our target submission
         if ($appIdQid !== null) {
             $val = $sub['answers'][$appIdQid]['answer'] ?? '';
