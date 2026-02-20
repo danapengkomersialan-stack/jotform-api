@@ -72,10 +72,10 @@ try {
             if (stripos($answer['text'] ?? '', 'Application ID') !== false) $appIdQid = $qid;
         }
         print "<pre>";
-        print $reviewer1Qid."\n"; 
-        print $reviewer2Qid."\n";
-        print $appStatusQid."\n";
-        print $appIdQid."\n";
+        print "review1: ".$answer['text']." ".$reviewer1Qid."\n"; 
+        print "review2: ".$answer['text']." ".$reviewer2Qid."\n";
+        print "appstatus: ".$answer['text']." ".$appStatusQid."\n";
+        print "appId: ".$answer['text']." ".$appIdQid."\n";
         exit;
         // Check if this is our target submission
         if ($appIdQid !== null) {
