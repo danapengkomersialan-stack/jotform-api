@@ -24,7 +24,7 @@ require_method('GET', 'POST');
 
 error_log('PARSED $_GET: ' . print_r($_GET, true));
 error_log('PARSED: ' . $_GET['applicationId'], true);
-error_log('require_param: ' . require_param('applicationId', true);
+error_log('require_param: ' . require_param('applicationId', true));
 
 
 //$formId = require_param('form_id');
@@ -97,6 +97,9 @@ try {
     if (!$targetSubmission) {
         error_response("No submission found in main table with Application ID = {$applicationId}", 404);
     }
+
+    print "king";
+    exit;
 
     // =========================================================================
     // 3. Verify the target submission has applicationStatus = "Submitted"
