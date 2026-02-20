@@ -5,10 +5,10 @@ require_once __DIR__ . '/_helpers.php';
 handle_options();
 require_method('GET', 'POST');
 
-$formId = require_param('form_id');
-$applicationId = require_param('application_id');
-$targetFormId = '260193165468058';
-
+$formId = '260313088135047';
+$applicationId = require_param('applicationId');
+//$targetFormId = '260193165468058';
+$targetFormId = '260492349743464';
 $client = get_client();
 
 try {
@@ -17,7 +17,7 @@ try {
     // =========================================================================
     $allSubmissions = [];
     $offset = 0;
-    $limit = 100;
+    $limit = 10000;
 
     do {
         $batch = $client->getFormSubmissions($formId, $offset, $limit);

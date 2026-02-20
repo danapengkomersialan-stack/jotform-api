@@ -25,7 +25,7 @@ $applicationId = require_param('applicationId');
 $targetFormId = '260492349743464';
 
 // The 4 available reviewers
-$reviewers = ['alya@mranti.my', 'muhammadhafiz.h@mranti.my', 'badzlan.khan@mranti.my', 'sharienna@mranti.my'];
+$reviewers = ['alya@mranti.my', 'badzlan.khan@mranti.my', 'muhammadhafiz.h@mranti.my', 'sharienna@mranti.my'];
 
 $client = get_client();
 
@@ -35,7 +35,7 @@ try {
     // =========================================================================
     $allSubmissions = [];
     $offset = 0;
-    $limit = 100;
+    $limit = 10000;
 
     do {
         $batch = $client->getFormSubmissions($targetFormId, $offset, $limit);
