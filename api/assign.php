@@ -22,11 +22,6 @@ require_method('GET', 'POST');
 
 
 
-error_log('PARSED $_GET: ' . print_r($_GET, true));
-error_log('PARSED: ' . $_GET['applicationId'], true);
-error_log('require_param: ' . require_param('applicationId', true));
-
-
 //$formId = require_param('form_id');
 $applicationId = require_param('applicationId');
 $targetFormId = '260492349743464';
@@ -47,12 +42,8 @@ try {
     $batch = $client->getFormSubmissions($targetFormId, $offset, $limit);
     $allSubmissions = array_merge($allSubmissions, $batch);
 
-    print "<pre>";
-    print $applicationId."\n";
-    print $targetFormId."\n";
-    print_r($batch);
-    print_r($allSubmissions);
-    exit;
+    
+   
 
     do {
         $batch = $client->getFormSubmissions($targetFormId, $offset, $limit);
@@ -68,7 +59,9 @@ try {
     $appStatusQid = null;
     $appIdQid = null;
     $targetSubmission = null;
-
+    print "<pre>";
+print_r($allSubmissions);
+exit;
     // First pass: find the target submission and field QIDs
     foreach ($allSubmissions as $sub) {
         if (!isset($sub['answers'])) continue;
