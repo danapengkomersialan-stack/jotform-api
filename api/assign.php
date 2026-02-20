@@ -44,6 +44,16 @@ try {
     $offset = 0;
     $limit = 100;
 
+    $batch = $client->getFormSubmissions($targetFormId, $offset, $limit);
+    $allSubmissions = array_merge($allSubmissions, $batch);
+
+    print "<pre>";
+    print $applicationId."\n";
+    print $targetFormId."\n";
+    print_r($batch);
+    print_r($allSubmissions);
+    exit;
+
     do {
         $batch = $client->getFormSubmissions($targetFormId, $offset, $limit);
         $allSubmissions = array_merge($allSubmissions, $batch);
