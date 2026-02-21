@@ -56,7 +56,7 @@ try {
     print "submissions\n";
     print_r($allSubmissions)."\n";
     print "match\n";
-    prinr_r($matched);
+    print_r($matched);
     exit;
     $sectionQids = []; // ['Section 1' => qid, 'Section 2' => qid, ...]
     $firstAnswers = $matched[0]['answers'];
