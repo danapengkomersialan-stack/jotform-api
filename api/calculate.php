@@ -139,10 +139,16 @@ try {
             }
         }
     }
+    print "<pre>";
+    print "target submission\n";
 
     if (!$targetSubmission) {
         error_response("No submission found in target form with Application ID = {$applicationId}", 404);
     }
+    print_r($targetSubmission);
+    print "match\n";
+    print_r($matched);
+    exit;
 
     // =========================================================================
     // 4. Map averages to target form's "Section X Total Score" fields and update
