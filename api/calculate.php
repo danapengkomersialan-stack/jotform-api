@@ -25,7 +25,7 @@ try {
         $offset += $limit;
     } while (count($batch) === $limit);
 
-    // Find submissions matching application_id
+    // Find submissions matching applicationId
     $matched = [];
     foreach ($allSubmissions as $submission) {
         if (!isset($submission['answers'])) continue;
@@ -52,6 +52,12 @@ try {
     // =========================================================================
 
     // Find QIDs for "Section X Scoring" fields from the first matched submission
+    print "<pre>";
+    print "submissions\n";
+    print_r($allSubmissions)."\n";
+    print "match\n";
+    prinr_r($matched);
+    exit;
     $sectionQids = []; // ['Section 1' => qid, 'Section 2' => qid, ...]
     $firstAnswers = $matched[0]['answers'];
     foreach ($firstAnswers as $qid => $answer) {
