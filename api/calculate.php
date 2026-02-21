@@ -108,8 +108,8 @@ try {
         $averages[$sectionNum] = (($score1 + $score2) / 10) * $sectionWeightScore[$sub1[$qid]['name']];
     }
 
-    print "average\n";
-    print_r($average)."\n";
+    print "averages\n";
+    print_r($averages)."\n";
     print "match\n";
     print_r($matched)."\n";
     print "sub1\n";
