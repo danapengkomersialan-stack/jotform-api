@@ -202,22 +202,23 @@ try {
     foreach ($averages as $sectionNum => $avg) {
         if (isset($targetQids[$sectionNum])) {
             $updateData[(string) $targetQids[$sectionNum]] = (string) $avg;
-           // $updateData[(string) $targetQids[$sectionNum]] = (string) $avg;
             $updatedSections["section{$sectionNum}WeightScore"] = [
                 'target_qid' => $targetQids[$sectionNum],
                 'average' => $avg,
             ];
         }
+    }
 
+    foreach ($remarks as $sectionNum => $rmk) {
         if (isset($targetRids[$sectionNum])) {
-            $updateData[(string) $targetRids[$sectionNum]] = (string) $avg;
-           // $updateData[(string) $targetQids[$sectionNum]] = (string) $avg;
+            $updateData[(string) $targetRids[$sectionNum]] = (string) $rmk;
             $updatedSections["section{$sectionNum}TargetRemarks"] = [
                 'target_qid' => $targetRids[$sectionNum],
-                'average' => $avg,
+                'remarks' => $rmk,
             ];
         }
     }
+    
     print "<pre>";
     print "averages\n";
     print_r($averages)."\n";
