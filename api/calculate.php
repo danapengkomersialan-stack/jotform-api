@@ -90,6 +90,26 @@ try {
     $sub1 = $matched[0]['answers'];
     $sub2 = $matched[1]['answers'];
     $averages = [];
+    
+
+    $sectionWeightScore = array(
+        'section1Score' => 5,
+        'section2Score' => 5,
+        'section3Score' => 5,
+        'section4Score' => 30,
+        'section5Score' => 30,
+        'section6Score' => 25,
+    )
+
+    foreach ($sectionQids as $sectionNum => $qid) {
+        $score1 = floatval($sub1[$qid]['answer'] ?? 0);
+        $score2 = floatval($sub2[$qid]['answer'] ?? 0);
+        
+        $averages[$sectionNum] = (($score1 + $score2) / 10) * $sectionWeightScore[$sub1[$qid]['name']];
+    }
+
+    print "average\n";
+    print_r($average)."\n";
     print "match\n";
     print_r($matched)."\n";
     print "sub1\n";
@@ -99,12 +119,6 @@ try {
     print "sectionQids\n";
     print_r($sectionQids)."\n";
     exit;
-
-    foreach ($sectionQids as $sectionNum => $qid) {
-        $score1 = floatval($sub1[$qid]['answer'] ?? 0);
-        $score2 = floatval($sub2[$qid]['answer'] ?? 0);
-        $averages[$sectionNum] = ($score1 + $score2) / 2;
-    }
 
     // =========================================================================
     // 3. Find target submission in target form where Application ID matches
