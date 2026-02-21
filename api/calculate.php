@@ -121,7 +121,7 @@ try {
         $remark1 = $sub1[$qid]['answer'] ?? '';
         $remark2 = $sub2[$qid]['answer'] ?? '';
         
-        $remarks[$sectionNum] = $reviewerEmail1.": ".$remark1 ."<br>"$reviewerEmail2.": ".$remark2;
+        $remarks[$sectionNum] = $reviewerEmail1.": ".$remark1 ."<br>".$reviewerEmail2.": ".$remark2;
     }
 
 
