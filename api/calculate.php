@@ -67,9 +67,7 @@ try {
                 print "insection\n";
                  $sectionQids[$sectionNum] = $qid;
             }
-        } else {
-            print "notinarray\n";
-        }
+        } 
         // if (preg_match('/^Section\s+(\d+)\s+Scoring$/i', $name, $m)) {
         //     $sectionNum = (int) $m[1];
         //     if ($sectionNum >= 1 && $sectionNum <= 6) {
@@ -84,15 +82,23 @@ try {
     if (empty($sectionQids)) {
         error_response('No "Section X Scoring" fields found in source submissions', 404);
     }
-    
-    print_r($sectionQids)."\n";
-    exit;
+
+
     
 
     // Calculate averages across first 2 submissions
     $sub1 = $matched[0]['answers'];
     $sub2 = $matched[1]['answers'];
     $averages = [];
+    print "match\n";
+    print_r($matched)."\n";
+    print "sub1\n";
+    print_r($sub1)."\n";
+    print "sub2\n";
+    print_r($sub2)."\n";
+    print "sectionQids\n";
+    print_r($sectionQids)."\n";
+    exit;
 
     foreach ($sectionQids as $sectionNum => $qid) {
         $score1 = floatval($sub1[$qid]['answer'] ?? 0);
