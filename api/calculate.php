@@ -52,27 +52,33 @@ try {
     // =========================================================================
 
     // Find QIDs for "Section X Scoring" fields from the first matched submission
-    print "<pre>";
-    print "submissions\n";
-    print_r($allSubmissions)."\n";
-    print "match\n";
-    print_r($matched);
-    exit;
+    
     $sectionQids = []; // ['Section 1' => qid, 'Section 2' => qid, ...]
+    $sixScoreFieldName = array('section1Score', 'section2Score', 'section3Score', 'section4Score', 'section5Score','section6Score');
     $firstAnswers = $matched[0]['answers'];
     foreach ($firstAnswers as $qid => $answer) {
-        $text = $answer['text'] ?? '';
-        if (preg_match('/^Section\s+(\d+)\s+Scoring$/i', $text, $m)) {
-            $sectionNum = (int) $m[1];
+        $name = $answer['name'] ?? '';
+        if (in_array($name,  $sixScoreFieldName)) {
+            (int) $sectionNum = substr($name, 8, 1);
             if ($sectionNum >= 1 && $sectionNum <= 6) {
-                $sectionQids[$sectionNum] = $qid;
+                 $sectionQids[$sectionNum] = $qid;
             }
         }
+        // if (preg_match('/^Section\s+(\d+)\s+Scoring$/i', $name, $m)) {
+        //     $sectionNum = (int) $m[1];
+        //     if ($sectionNum >= 1 && $sectionNum <= 6) {
+        //         $sectionQids[$sectionNum] = $qid;
+        //     }
+        // }
     }
 
     if (empty($sectionQids)) {
         error_response('No "Section X Scoring" fields found in source submissions', 404);
     }
+
+    print "<pre>";
+    print_r($sectionQids)."\n";
+    exit;
 
     // Calculate averages across first 2 submissions
     $sub1 = $matched[0]['answers'];
