@@ -67,7 +67,7 @@ try {
             }
         } 
 
-         if (in_array($name,  $sixRemarksFieldName)) {
+        if (in_array($name,  $sixRemarksFieldName)) {
             (int) $sectionNum = substr($name, 7, 1);
             if ($sectionNum >= 1 && $sectionNum <= 6) {
                 $sectionRids[$sectionNum] = $qid;
@@ -79,6 +79,10 @@ try {
         //         $sectionQids[$sectionNum] = $qid;
         //     }
         // }
+
+        if($name == "reviewerEmail"){
+            $emailKeyId = $qid; 
+        }
     }
 
     
@@ -115,8 +119,11 @@ try {
         
         $averages[$sectionNum] = (($score1 + $score2) / 10) * $sectionWeightScore[$sub1[$qid]['name']];
     }
-
-     foreach ($sectionRids as $sectionNum => $qid) {
+print "<pre>";
+    print "Reviewer 1 ".$sub1[$emailKeyId]['answer']."\n";
+print "Reviewer 2 ".$sub2[$emailKeyId]['answer']."\n";
+exit;
+    foreach ($sectionRids as $sectionNum => $qid) {
         $remark1 = $sub1[$qid]['answer'] ?? '';
         $remark2 = $sub2[$qid]['answer'] ?? '';
         
