@@ -52,20 +52,15 @@ try {
     // =========================================================================
 
     // Find QIDs for "Section X Scoring" fields from the first matched submission
-    print "<pre>";
     $sectionQids = []; // ['Section 1' => qid, 'Section 2' => qid, ...]
     $sixScoreFieldName = array('section1Score', 'section2Score', 'section3Score', 'section4Score', 'section5Score','section6Score');
     $firstAnswers = $matched[0]['answers'];
     foreach ($firstAnswers as $qid => $answer) {
         $name = $answer['name'] ?? '';
-        print $name."\n";
         if (in_array($name,  $sixScoreFieldName)) {
-            print "inarray\n";
             (int) $sectionNum = substr($name, 7, 1);
-            print $sectionNum."\n"; 
             if ($sectionNum >= 1 && $sectionNum <= 6) {
-                print "insection\n";
-                 $sectionQids[$sectionNum] = $qid;
+                $sectionQids[$sectionNum] = $qid;
             }
         } 
         // if (preg_match('/^Section\s+(\d+)\s+Scoring$/i', $name, $m)) {
@@ -80,7 +75,7 @@ try {
     
 
     if (empty($sectionQids)) {
-        error_response('No "Section X Scoring" fields found in source submissions', 404);
+        error_response('No "sectionXScore" fields found in source submissions', 404);
     }
 
 
@@ -90,7 +85,6 @@ try {
     $sub1 = $matched[0]['answers'];
     $sub2 = $matched[1]['answers'];
     $averages = [];
-    
 
     $sectionWeightScore = array(
         'section1Score' => 5,
@@ -108,17 +102,17 @@ try {
         $averages[$sectionNum] = (($score1 + $score2) / 10) * $sectionWeightScore[$sub1[$qid]['name']];
     }
 
-    print "averages\n";
-    print_r($averages)."\n";
-    print "match\n";
-    print_r($matched)."\n";
-    print "sub1\n";
-    print_r($sub1)."\n";
-    print "sub2\n";
-    print_r($sub2)."\n";
-    print "sectionQids\n";
-    print_r($sectionQids)."\n";
-    exit;
+    // print "averages\n";
+    // print_r($averages)."\n";
+    // print "match\n";
+    // print_r($matched)."\n";
+    // print "sub1\n";
+    // print_r($sub1)."\n";
+    // print "sub2\n";
+    // print_r($sub2)."\n";
+    // print "sectionQids\n";
+    // print_r($sectionQids)."\n";
+    // exit;
 
     // =========================================================================
     // 3. Find target submission in target form where Application ID matches
@@ -154,18 +148,27 @@ try {
     // 4. Map averages to target form's "Section X Total Score" fields and update
     // =========================================================================
     $targetQids = []; // sectionNum => qid in target form
+    $sixWeightScoreFieldName = array('section1WeightScore', 'section2WeightScore', 'section3WeightScore', 'section4WeightScore', 'section5WeightScore','section6WeightScore');
+    
     foreach ($targetSubmission['answers'] as $qid => $answer) {
-        $text = $answer['text'] ?? '';
-        if (preg_match('/^Section\s+(\d+)\s+Total\s+Score$/i', $text, $m)) {
-            $sectionNum = (int) $m[1];
+        $name = $answer['name'] ?? '';
+        if (in_array($name,  $sixWeightScoreFieldName)) {
+            (int) $sectionNum = substr($name, 7, 1);
             if ($sectionNum >= 1 && $sectionNum <= 6) {
                 $targetQids[$sectionNum] = $qid;
             }
-        }
+        } 
+        //section1WeightScore
+        // if (preg_match('/^Section\s+(\d+)\s+Total\s+Score$/i', $text, $m)) {
+        //     $sectionNum = (int) $m[1];
+        //     if ($sectionNum >= 1 && $sectionNum <= 6) {
+        //         $targetQids[$sectionNum] = $qid;
+        //     }
+        // }
     }
 
     if (empty($targetQids)) {
-        error_response('No "Section X Total Score" fields found in target form', 404);
+        error_response('No "sectionXWeightScore" fields found in target form', 404);
     }
 
     // Build update payload: { "qid" => "averaged value" }
@@ -174,12 +177,31 @@ try {
     foreach ($averages as $sectionNum => $avg) {
         if (isset($targetQids[$sectionNum])) {
             $updateData[(string) $targetQids[$sectionNum]] = (string) $avg;
-            $updatedSections["Section {$sectionNum}"] = [
+            $updatedSections["section{$sectionNum}WeightScore"] = [
                 'target_qid' => $targetQids[$sectionNum],
                 'average' => $avg,
             ];
         }
     }
+print "<pre>";
+    print "averages\n";
+    print_r($averages)."\n";
+    print "targetQids\n";
+    print_r($targetQids)."\n";
+    print "updateData\n";
+    print_r($updateData)."\n";
+    print "updatedSections\n";
+    print_r($updatedSections)."\n";
+    
+    // print "match\n";
+    // print_r($matched)."\n";
+    // print "sub1\n";
+    // print_r($sub1)."\n";
+    // print "sub2\n";
+    // print_r($sub2)."\n";
+    // print "sectionQids\n";
+    // print_r($sectionQids)."\n";
+     exit;
 
     $editResult = $client->editSubmission($targetSubmission['id'], $updateData);
 
