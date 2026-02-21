@@ -53,7 +53,10 @@ try {
 
     // Find QIDs for "Section X Scoring" fields from the first matched submission
     $sectionQids = []; // ['Section 1' => qid, 'Section 2' => qid, ...]
+    $sectionRids = [];
     $sixScoreFieldName = array('section1Score', 'section2Score', 'section3Score', 'section4Score', 'section5Score','section6Score');
+    $sixRemarksFieldName = array('section1Remarks', 'section2Remarks', 'section3Remarks', 'section4Remarks', 'section5Remarks','section6Remarks');
+    
     $firstAnswers = $matched[0]['answers'];
     foreach ($firstAnswers as $qid => $answer) {
         $name = $answer['name'] ?? '';
@@ -61,6 +64,13 @@ try {
             (int) $sectionNum = substr($name, 7, 1);
             if ($sectionNum >= 1 && $sectionNum <= 6) {
                 $sectionQids[$sectionNum] = $qid;
+            }
+        } 
+
+         if (in_array($name,  $sixRemarksFieldName)) {
+            (int) $sectionNum = substr($name, 7, 1);
+            if ($sectionNum >= 1 && $sectionNum <= 6) {
+                $sectionRids[$sectionNum] = $qid;
             }
         } 
         // if (preg_match('/^Section\s+(\d+)\s+Scoring$/i', $name, $m)) {
@@ -78,6 +88,10 @@ try {
         error_response('No "sectionXScore" fields found in source submissions', 404);
     }
 
+     if (empty($sectionRids)) {
+        error_response('No "sectionXRemarks" fields found in source submissions', 404);
+    }
+
 
     
 
@@ -85,7 +99,7 @@ try {
     $sub1 = $matched[0]['answers'];
     $sub2 = $matched[1]['answers'];
     $averages = [];
-
+    $remarks = [];
     $sectionWeightScore = array(
         'section1Score' => 5,
         'section2Score' => 5,
@@ -102,17 +116,26 @@ try {
         $averages[$sectionNum] = (($score1 + $score2) / 10) * $sectionWeightScore[$sub1[$qid]['name']];
     }
 
+     foreach ($sectionRids as $sectionNum => $qid) {
+        $remark1 = $sub1[$qid]['answer'] ?? '';
+        $remark2 = $sub2[$qid]['answer'] ?? '';
+        
+        $remarks[$sectionNum] = $remark1 ."<br>".$remark2;
+    }
+print "<pre>";
     // print "averages\n";
     // print_r($averages)."\n";
-    // print "match\n";
-    // print_r($matched)."\n";
+     print "match\n";
+     print_r($matched)."\n";
     // print "sub1\n";
     // print_r($sub1)."\n";
     // print "sub2\n";
     // print_r($sub2)."\n";
-    // print "sectionQids\n";
-    // print_r($sectionQids)."\n";
-    // exit;
+    print "remarks\n";
+     print_r($remarks)."\n";
+     print "sectionRids\n";
+     print_r($sectionRids)."\n";
+     exit;
 
     // =========================================================================
     // 3. Find target submission in target form where Application ID matches
