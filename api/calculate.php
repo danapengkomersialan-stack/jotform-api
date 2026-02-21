@@ -84,8 +84,6 @@ try {
             $emailKeyId = $qid; 
         }
     }
-
-    
     
 
     if (empty($sectionQids)) {
@@ -96,12 +94,11 @@ try {
         error_response('No "sectionXRemarks" fields found in source submissions', 404);
     }
 
-
-    
-
     // Calculate averages across first 2 submissions
     $sub1 = $matched[0]['answers'];
     $sub2 = $matched[1]['answers'];
+    $reviewerEmail1 = $sub1[$emailKeyId]['answer'];
+    $reviewerEmail2 = $sub2[$emailKeyId]['answer'];
     $averages = [];
     $remarks = [];
     $sectionWeightScore = array(
@@ -119,30 +116,14 @@ try {
         
         $averages[$sectionNum] = (($score1 + $score2) / 10) * $sectionWeightScore[$sub1[$qid]['name']];
     }
-print "<pre>";
-    print "Reviewer 1 ".$sub1[$emailKeyId]['answer']."\n";
-print "Reviewer 2 ".$sub2[$emailKeyId]['answer']."\n";
-exit;
+
     foreach ($sectionRids as $sectionNum => $qid) {
         $remark1 = $sub1[$qid]['answer'] ?? '';
         $remark2 = $sub2[$qid]['answer'] ?? '';
         
-        $remarks[$sectionNum] = $remark1 ."<br>".$remark2;
+        $remarks[$sectionNum] = $reviewerEmail1.": ".$remark1 ."<br>"$reviewerEmail2.": ".$remark2;
     }
-print "<pre>";
-    // print "averages\n";
-    // print_r($averages)."\n";
-     print "match\n";
-     print_r($matched)."\n";
-    // print "sub1\n";
-    // print_r($sub1)."\n";
-    // print "sub2\n";
-    // print_r($sub2)."\n";
-    print "remarks\n";
-     print_r($remarks)."\n";
-     print "sectionRids\n";
-     print_r($sectionRids)."\n";
-     exit;
+
 
     // =========================================================================
     // 3. Find target submission in target form where Application ID matches
@@ -169,22 +150,19 @@ print "<pre>";
             }
         }
     }
-    print "<pre>";
-    print "target submission\n";
-
+   
     if (!$targetSubmission) {
         error_response("No submission found in target form with Application ID = {$applicationId}", 404);
     }
-    print_r($targetSubmission);
-    print "match\n";
-    print_r($matched);
-    exit;
+   
 
     // =========================================================================
     // 4. Map averages to target form's "Section X Total Score" fields and update
     // =========================================================================
     $targetQids = []; // sectionNum => qid in target form
+    $targetRids = [];
     $sixWeightScoreFieldName = array('section1WeightScore', 'section2WeightScore', 'section3WeightScore', 'section4WeightScore', 'section5WeightScore','section6WeightScore');
+    $sixTargetRemarksFieldName = array('section1TargetRemarks', 'section2TargetRemarks', 'section3TargetRemarks', 'section4TargetRemarks', 'section5TargetRemarks','section6TargetRemarks');
     
     foreach ($targetSubmission['answers'] as $qid => $answer) {
         $name = $answer['name'] ?? '';
@@ -192,6 +170,13 @@ print "<pre>";
             (int) $sectionNum = substr($name, 7, 1);
             if ($sectionNum >= 1 && $sectionNum <= 6) {
                 $targetQids[$sectionNum] = $qid;
+            }
+        } 
+
+         if (in_array($name,  $sixTargetRemarksFieldName)) {
+            (int) $sectionNum = substr($name, 7, 1);
+            if ($sectionNum >= 1 && $sectionNum <= 6) {
+                $targetRids[$sectionNum] = $qid;
             }
         } 
         //section1WeightScore
@@ -207,19 +192,33 @@ print "<pre>";
         error_response('No "sectionXWeightScore" fields found in target form', 404);
     }
 
+    if (empty($targetRids)) {
+        error_response('No "sectionXTargetRemarks" fields found in target form', 404);
+    }
+
     // Build update payload: { "qid" => "averaged value" }
     $updateData = [];
     $updatedSections = [];
     foreach ($averages as $sectionNum => $avg) {
         if (isset($targetQids[$sectionNum])) {
             $updateData[(string) $targetQids[$sectionNum]] = (string) $avg;
+           // $updateData[(string) $targetQids[$sectionNum]] = (string) $avg;
             $updatedSections["section{$sectionNum}WeightScore"] = [
                 'target_qid' => $targetQids[$sectionNum],
                 'average' => $avg,
             ];
         }
+
+        if (isset($targetRids[$sectionNum])) {
+            $updateData[(string) $targetRids[$sectionNum]] = (string) $avg;
+           // $updateData[(string) $targetQids[$sectionNum]] = (string) $avg;
+            $updatedSections["section{$sectionNum}TargetRemarks"] = [
+                'target_qid' => $targetRids[$sectionNum],
+                'average' => $avg,
+            ];
+        }
     }
-print "<pre>";
+    print "<pre>";
     print "averages\n";
     print_r($averages)."\n";
     print "targetQids\n";
