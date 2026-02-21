@@ -61,7 +61,7 @@ try {
         print $name."\n";
         if (in_array($name,  $sixScoreFieldName)) {
             print "inarray\n";
-            (int) $sectionNum = substr($name, 8, 1);
+            (int) $sectionNum = substr($name, 7, 1);
             print $sectionNum."\n"; 
             if ($sectionNum >= 1 && $sectionNum <= 6) {
                 print "insection\n";
@@ -79,13 +79,14 @@ try {
     }
 
     
-    print_r($sectionQids)."\n";
-    exit;
+    
 
     if (empty($sectionQids)) {
         error_response('No "Section X Scoring" fields found in source submissions', 404);
     }
-
+    
+    print_r($sectionQids)."\n";
+    exit;
     
 
     // Calculate averages across first 2 submissions
