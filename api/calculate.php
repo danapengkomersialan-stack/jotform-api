@@ -184,6 +184,7 @@ try {
     $sixTargetRemarksFieldName = array('section1TargetRemarks', 'section2TargetRemarks', 'section3TargetRemarks', 'section4TargetRemarks', 'section5TargetRemarks','section6TargetRemarks');
     $appStatusQid = null;
     $overallCombineRemarksQid = null;
+    $totalScoreQid = null;
     foreach ($targetSubmission['answers'] as $qid => $answer) {
         $name = $answer['name'] ?? '';
         if (in_array($name,  $sixWeightScoreFieldName)) {
@@ -206,6 +207,10 @@ try {
 
         if ($name == "overallCombineRemarks"){
             $overallCombineRemarksQid = $qid;
+        }
+
+        if ($name == "totalScore"){
+            $totalScoreQid = $qid;
         }
         //section1WeightScore
         // if (preg_match('/^Section\s+(\d+)\s+Total\s+Score$/i', $text, $m)) {
@@ -232,9 +237,14 @@ try {
         error_response('No "overallCombineRemarks" fields found in target form', 404);
     }
 
+    if (empty($totalScoreQid)){
+        error_response('No "totalScore" fields found in target form', 404);
+    }
+
     // Build update payload: { "qid" => "averaged value" }
     $updateData = [];
     $updatedSections = [];
+    $total_score = 0;
     foreach ($averages as $sectionNum => $avg) {
         if (isset($targetQids[$sectionNum])) {
             $updateData[(string) $targetQids[$sectionNum]] = (string) $avg;
@@ -242,6 +252,8 @@ try {
                 'target_qid' => $targetQids[$sectionNum],
                 'average' => $avg,
             ];
+
+            $total_score = $total_score + $avg;
         }
     }
 
@@ -256,23 +268,24 @@ try {
     }
 
     $updateData[(string) $appStatusQid] = 'review_done';
+    $updateData[(string) $totalScoreQid] = $total_score;
     $updateData[(string) $overallCombineRemarksQid] = $overallRemarks;
     
-    // print "<pre>";
+     print "<pre>";
     // print "averages\n";
     // print_r($averages)."\n";
-    // print "match\n";
-    // print_r($matched)."\n";
-    // print "targetSubmission\n";
-    // print_r($targetSubmission)."\n";
+     print "match\n";
+     print_r($matched)."\n";
+     print "targetSubmission\n";
+     print_r($targetSubmission)."\n";
     // print "targetQids\n";
     // print_r($targetQids)."\n";
     // print "targetRids\n";
     // print_r($targetRids)."\n";
     // print "appStatusQid\n";
     // print_r($appStatusQid)."\n";
-    // print "updateData\n";
-    // print_r($updateData)."\n";
+    print "updateData\n";
+    print_r($updateData)."\n";
     // print "updatedSections\n";
     // print_r($updatedSections)."\n";
 
@@ -286,7 +299,7 @@ try {
     // print_r($sub2)."\n";
     // print "sectionQids\n";
     // print_r($sectionQids)."\n";
-    // exit;
+     exit;
 
     $editResult = $client->editSubmission($targetSubmission['id'], $updateData);
 
