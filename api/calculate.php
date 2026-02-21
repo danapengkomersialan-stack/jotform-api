@@ -56,7 +56,8 @@ try {
     $sectionRids = [];
     $sixScoreFieldName = array('section1Score', 'section2Score', 'section3Score', 'section4Score', 'section5Score','section6Score');
     $sixRemarksFieldName = array('section1Remarks', 'section2Remarks', 'section3Remarks', 'section4Remarks', 'section5Remarks','section6Remarks');
-    
+    $emailKeyId = null;
+    $overallRemarksKeyId = null;
     $firstAnswers = $matched[0]['answers'];
     foreach ($firstAnswers as $qid => $answer) {
         $name = $answer['name'] ?? '';
@@ -80,8 +81,12 @@ try {
         //     }
         // }
 
-        if($name == "reviewerEmail"){
+        if ($name == "reviewerEmail"){
             $emailKeyId = $qid; 
+        }
+
+        if ($name == "overallRemarks"){
+            $overallRemarksKeyId = $qid;
         }
     }
     
@@ -90,8 +95,16 @@ try {
         error_response('No "sectionXScore" fields found in source submissions', 404);
     }
 
-     if (empty($sectionRids)) {
+    if (empty($sectionRids)) {
         error_response('No "sectionXRemarks" fields found in source submissions', 404);
+    }
+
+    if (empty($emailKeyId)) {
+        error_response('No "emailKeyId" fields found in source submissions', 404);
+    }
+
+    if (empty($overallRemarksKeyId)) {
+        error_response('No "overallRemarks" fields found in source submissions', 404);
     }
 
     // Calculate averages across first 2 submissions
@@ -101,6 +114,7 @@ try {
     $reviewerEmail2 = $sub2[$emailKeyId]['answer'];
     $averages = [];
     $remarks = [];
+    $overallRemarks = [];
     $sectionWeightScore = array(
         'section1Score' => 5,
         'section2Score' => 5,
@@ -123,6 +137,10 @@ try {
         
         $remarks[$sectionNum] = $reviewerEmail1.": ".$remark1 ."<br>".$reviewerEmail2.": ".$remark2;
     }
+
+    $overallRemarks1 = $sub1[$overallRemarksKeyId]['answer'];
+    $overallRemarks2 = $sub2[$overallRemarksKeyId]['answer'];
+    $overallRemarks = $reviewerEmail1.": ".$overallRemarks1 ."<br>".$reviewerEmail2.": ".$overallRemarks2;
 
 
     // =========================================================================
@@ -165,6 +183,7 @@ try {
     $sixWeightScoreFieldName = array('section1WeightScore', 'section2WeightScore', 'section3WeightScore', 'section4WeightScore', 'section5WeightScore','section6WeightScore');
     $sixTargetRemarksFieldName = array('section1TargetRemarks', 'section2TargetRemarks', 'section3TargetRemarks', 'section4TargetRemarks', 'section5TargetRemarks','section6TargetRemarks');
     $appStatusQid = null;
+    $overallCombineRemarksQid = null;
     foreach ($targetSubmission['answers'] as $qid => $answer) {
         $name = $answer['name'] ?? '';
         if (in_array($name,  $sixWeightScoreFieldName)) {
@@ -183,6 +202,10 @@ try {
         
         if ($name == "applicationStatus"){
             $appStatusQid = $qid;
+        }
+
+        if ($name == "overallCombineRemarks"){
+            $overallCombineRemarksQid = $qid;
         }
         //section1WeightScore
         // if (preg_match('/^Section\s+(\d+)\s+Total\s+Score$/i', $text, $m)) {
@@ -203,6 +226,10 @@ try {
 
     if (empty($appStatusQid)) {
         error_response('No "applicationStatus" fields found in target form', 404);
+    }
+
+    if (empty($overallCombineRemarksQid)) {
+        error_response('No "overallCombineRemarks" fields found in target form', 404);
     }
 
     // Build update payload: { "qid" => "averaged value" }
@@ -229,12 +256,15 @@ try {
     }
 
     $updateData[(string) $appStatusQid] = 'review_done';
+    $updateData[(string) $overallCombineRemarksQid] = $overallRemarks;
     
     print "<pre>";
     print "averages\n";
     print_r($averages)."\n";
     print "match\n";
     print_r($matched)."\n";
+    print "targetSubmission\n";
+    print_r($targetSubmission)."\n";
     print "targetQids\n";
     print_r($targetQids)."\n";
     print "targetRids\n";
