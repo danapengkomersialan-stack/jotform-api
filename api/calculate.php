@@ -258,23 +258,23 @@ try {
     $updateData[(string) $appStatusQid] = 'review_done';
     $updateData[(string) $overallCombineRemarksQid] = $overallRemarks;
     
-    print "<pre>";
-    print "averages\n";
-    print_r($averages)."\n";
-    print "match\n";
-    print_r($matched)."\n";
-    print "targetSubmission\n";
-    print_r($targetSubmission)."\n";
-    print "targetQids\n";
-    print_r($targetQids)."\n";
-    print "targetRids\n";
-    print_r($targetRids)."\n";
-    print "appStatusQid\n";
-    print_r($appStatusQid)."\n";
-    print "updateData\n";
-    print_r($updateData)."\n";
-    print "updatedSections\n";
-    print_r($updatedSections)."\n";
+    // print "<pre>";
+    // print "averages\n";
+    // print_r($averages)."\n";
+    // print "match\n";
+    // print_r($matched)."\n";
+    // print "targetSubmission\n";
+    // print_r($targetSubmission)."\n";
+    // print "targetQids\n";
+    // print_r($targetQids)."\n";
+    // print "targetRids\n";
+    // print_r($targetRids)."\n";
+    // print "appStatusQid\n";
+    // print_r($appStatusQid)."\n";
+    // print "updateData\n";
+    // print_r($updateData)."\n";
+    // print "updatedSections\n";
+    // print_r($updatedSections)."\n";
 
      
     
@@ -286,7 +286,7 @@ try {
     // print_r($sub2)."\n";
     // print "sectionQids\n";
     // print_r($sectionQids)."\n";
-     exit;
+    // exit;
 
     $editResult = $client->editSubmission($targetSubmission['id'], $updateData);
 
