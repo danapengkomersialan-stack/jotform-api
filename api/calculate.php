@@ -99,7 +99,7 @@ try {
         'section4Score' => 30,
         'section5Score' => 30,
         'section6Score' => 25,
-    )
+    );
 
     foreach ($sectionQids as $sectionNum => $qid) {
         $score1 = floatval($sub1[$qid]['answer'] ?? 0);
