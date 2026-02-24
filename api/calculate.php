@@ -309,6 +309,54 @@ try {
 
     $editResult = $client->editSubmission($targetSubmission['id'], $updateData);
 
+    // =========================================================================
+    // 5. If shortlisted, copy submission data into clone form
+    // =========================================================================
+    $cloneResult = null;
+    if ($shortlistText === 'shortlisted') {
+        $cloneFormId = '260540966279467'; // <-- replace with actual clone form ID
+
+        // Get clone form questions to build name → QID map
+        $cloneQuestions = $client->getFormQuestions($cloneFormId);
+        $cloneNameToQid = [];
+        foreach ($cloneQuestions as $qid => $q) {
+            $name = $q['name'] ?? '';
+            if ($name !== '') {
+                $cloneNameToQid[$name] = $qid;
+            }
+        }
+
+        // Build field name → value map from target submission
+        $nameToValue = [];
+        foreach ($targetSubmission['answers'] as $qid => $answer) {
+            $name = $answer['name'] ?? '';
+            $value = $answer['answer'] ?? '';
+            if ($name !== '') {
+                $nameToValue[$name] = $value;
+            }
+        }
+        // Override with freshly computed values
+        $nameToValue['applicationStatus'] = $shortlistText;
+        $nameToValue['totalScore'] = $total_score;
+        $nameToValue['overallCombineRemarks'] = $overallRemarks;
+        foreach ($averages as $sectionNum => $avg) {
+            $nameToValue["section{$sectionNum}WeightScore"] = $avg;
+        }
+        foreach ($remarks as $sectionNum => $rmk) {
+            $nameToValue["section{$sectionNum}TargetRemarks"] = $rmk;
+        }
+
+        // Map values to clone form QIDs and create submission
+        $cloneSubmissionData = [];
+        foreach ($nameToValue as $name => $value) {
+            if (isset($cloneNameToQid[$name]) && $value !== '') {
+                $cloneSubmissionData[$cloneNameToQid[$name]] = $value;
+            }
+        }
+
+        $cloneResult = $client->createFormSubmission($cloneFormId, $cloneSubmissionData);
+    }
+
     json_response([
         'status' => 'success',
         'application_id' => $applicationId,
@@ -322,6 +370,7 @@ try {
         ],
         'averages' => $updatedSections,
         'edit_result' => $editResult,
+        'clone_result' => $cloneResult,
     ]);
 
 } catch (Exception $e) {
