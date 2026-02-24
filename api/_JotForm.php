@@ -335,7 +335,8 @@ class JotForm {
     public function createFormSubmission($formID, $submission) {
         $sub = [];
         foreach ($submission as $key => $value) {
-            if (strpos($key, '_')) {
+            //if (strpos($key, '_')) { chatgpt ask to change
+            if (strpos($key, '_') !== false){
                 $qid = substr($key, 0, strpos($key, '_'));
                 $type = substr($key, strpos($key, '_') + 1);
                 $sub["submission[{$qid}][{$type}]"] = $value;
