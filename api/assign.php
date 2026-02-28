@@ -26,8 +26,8 @@ $targetFormId = '260193165468058';
 //$targetFormId = '260492349743464';
 
 // The 4 available reviewers
-//$reviewers = ['alya@mranti.my', 'badzlan.khan@mranti.my', 'muhammadhafiz.h@mranti.my', 'sharienna@mranti.my'];
-$reviewers = ['ng.kiat@mranti.my', 'ng_king@yahoo.com', 'ngking80@gmail.com', 'derekfoo87@gmail.com'];
+$reviewers = ['alya@mranti.my', 'badzlan.khan@mranti.my', 'muhammadhafiz.h@mranti.my', 'sharienna@mranti.my'];
+//$reviewers = ['ng.kiat@mranti.my', 'ng_king@yahoo.com', 'ngking80@gmail.com', 'derekfoo87@gmail.com'];
 $client = get_client();
 
 try {
