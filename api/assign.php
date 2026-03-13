@@ -167,32 +167,32 @@ try {
     }
     $updateData[(string) $appStatusQid] = 'already_assigned';
 
-    // Debug: print all submissions' ApplicationID, Reviewer1, Reviewer2
-    echo "All submissions (AppID | R1 | R2):\n";
-    foreach ($allSubmissions as $sub) {
-        if (!isset($sub['answers'])) continue;
-        $subAppId = $sub['answers'][$appIdQid]['answer']     ?? '';
-        $subRev1  = $sub['answers'][$reviewer1Qid]['answer'] ?? '';
-        $subRev2  = $sub['answers'][$reviewer2Qid]['answer'] ?? '';
-        echo "  AppID={$subAppId} | R1={$subRev1} | R2={$subRev2}\n";
-    }
+    // // Debug: print all submissions' ApplicationID, Reviewer1, Reviewer2
+    // echo "All submissions (AppID | R1 | R2):\n";
+    // foreach ($allSubmissions as $sub) {
+    //     if (!isset($sub['answers'])) continue;
+    //     $subAppId = $sub['answers'][$appIdQid]['answer']     ?? '';
+    //     $subRev1  = $sub['answers'][$reviewer1Qid]['answer'] ?? '';
+    //     $subRev2  = $sub['answers'][$reviewer2Qid]['answer'] ?? '';
+    //     echo "  AppID={$subAppId} | R1={$subRev1} | R2={$subRev2}\n";
+    // }
 
-    // Debug: print the new values about to be written
-    echo "\nAbout to editSubmission => AppID={$applicationId} | R1={$assignReviewer1} | R2={$assignReviewer2}\n\n";
+    // // Debug: print the new values about to be written
+    // echo "\nAbout to editSubmission => AppID={$applicationId} | R1={$assignReviewer1} | R2={$assignReviewer2}\n\n";
 
-    // $editResult = $client->editSubmission($targetSubmission['id'], $updateData);
+    $editResult = $client->editSubmission($targetSubmission['id'], $updateData);
 
-    // json_response([
-    //     'status' => 'success',
-    //     'application_id' => $applicationId,
-    //     'target_form_id' => $targetFormId,
-    //     'target_submission_id' => $targetSubmission['id'],
-    //     'reviewer1' => $assignReviewer1,
-    //     'reviewer2' => $assignReviewer2,
-    //     'pair_index' => $pairIndex,
-    //     'total_pairs' => count($pairs),
-    //     'edit_result' => $editResult,
-    // ]);
+    json_response([
+        'status' => 'success',
+        'application_id' => $applicationId,
+        'target_form_id' => $targetFormId,
+        'target_submission_id' => $targetSubmission['id'],
+        'reviewer1' => $assignReviewer1,
+        'reviewer2' => $assignReviewer2,
+        'pair_index' => $pairIndex,
+        'total_pairs' => count($pairs),
+        'edit_result' => $editResult,
+    ]);
 
 } catch (Exception $e) {
     error_response($e->getMessage(), $e->getCode() ?: 500);
