@@ -133,12 +133,13 @@ try {
         }
     }
 
-    // Count how many already_assigned submissions exist to determine rotation position
+    // Count how many submissions already have reviewers assigned to determine rotation position
     $assignedCount = 0;
     foreach ($allSubmissions as $sub) {
         if (!isset($sub['answers'])) continue;
-        $subStatus = trim($sub['answers'][$appStatusQid]['answer'] ?? '');
-        if (strcasecmp($subStatus, 'already_assigned') === 0) {
+        $subRev1 = trim($sub['answers'][$reviewer1Qid]['answer'] ?? '');
+        $subRev2 = trim($sub['answers'][$reviewer2Qid]['answer'] ?? '');
+        if ($subRev1 !== '' && $subRev2 !== '') {
             $assignedCount++;
         }
     }
