@@ -310,7 +310,7 @@ try {
     $editResult = $client->editSubmission($targetSubmission['id'], $updateData);
 
     // =========================================================================
-    // 5. If shortlisted, copy submission data into clone form (temporary close)
+    // 5. If shortlisted, copy submission data into clone form (Temporary Close)
     // =========================================================================
     // $cloneResult = null;
     // if ($shortlistText === 'shortlisted') {
@@ -354,8 +354,8 @@ try {
     //         }
     //     }
 
-        //$cloneResult = $client->createFormSubmission($cloneFormId, $cloneSubmissionData);
-    }
+    //     //$cloneResult = $client->createFormSubmission($cloneFormId, $cloneSubmissionData);
+    // }
 
     json_response([
         'status' => 'success',
