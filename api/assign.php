@@ -124,62 +124,33 @@ try {
     }
 
     // =========================================================================
-    // 5. Count reviewer assignments across "Submitted" submissions to find least assigned
+    // 5. Generate all unique reviewer pairs and find the next pair in rotation
     // =========================================================================
-    $reviewerCounts = [];
-    foreach ($reviewers as $r) {
-        $reviewerCounts[$r] = 0;
+    $pairs = [];
+    for ($i = 0; $i < count($reviewers); $i++) {
+        for ($j = $i + 1; $j < count($reviewers); $j++) {
+            $pairs[] = [$reviewers[$i], $reviewers[$j]];
+        }
     }
 
+    // Count how many already_assigned submissions exist to determine rotation position
+    $assignedCount = 0;
     foreach ($allSubmissions as $sub) {
         if (!isset($sub['answers'])) continue;
-
-        // Only count reviewers from submissions with applicationStatus = "Submitted"
         $subStatus = trim($sub['answers'][$appStatusQid]['answer'] ?? '');
-        if (strcasecmp($subStatus, 'already_assigned') !== 0) continue;
-
-        $r1 = trim($sub['answers'][$reviewer1Qid]['answer'] ?? '');
-        $r2 = trim($sub['answers'][$reviewer2Qid]['answer'] ?? '');
-
-        if ($r1 !== '' && isset($reviewerCounts[$r1])) {
-            $reviewerCounts[$r1]++;
-        }
-        if ($r2 !== '' && isset($reviewerCounts[$r2])) {
-            $reviewerCounts[$r2]++;
+        if (strcasecmp($subStatus, 'already_assigned') === 0) {
+            $assignedCount++;
         }
     }
 
-    // Sort reviewers by assignment count (least first)
-    asort($reviewerCounts);
+    $pairIndex = $assignedCount % count($pairs);
+    $nextPair = $pairs[$pairIndex];
 
     // =========================================================================
     // 6. Determine which reviewers to assign
     // =========================================================================
-    $assignReviewer1 = $currentReviewer1;
-    $assignReviewer2 = $currentReviewer2;
-
-    if ($assignReviewer1 === '' && $assignReviewer2 === '') {
-        // Both empty: assign the 2 least assigned reviewers
-        $sorted = array_keys($reviewerCounts);
-        $assignReviewer1 = $sorted[0];
-        $assignReviewer2 = $sorted[1];
-    } elseif ($assignReviewer1 === '') {
-        // Only reviewer1 is empty: pick the least assigned who isn't reviewer2
-        foreach ($reviewerCounts as $r1name => $count) {
-            if ($r1name !== $assignReviewer2) {
-                $assignReviewer1 = $r1name;
-                break;
-            }
-        }
-    } elseif ($assignReviewer2 === '') {
-        // Only reviewer2 is empty: pick the least assigned who isn't reviewer1
-        foreach ($reviewerCounts as $r2name => $count) {
-            if ($r2name !== $assignReviewer1) {
-                $assignReviewer2 = $r2name;
-                break;
-            }
-        }
-    }
+    $assignReviewer1 = $currentReviewer1 !== '' ? $currentReviewer1 : $nextPair[0];
+    $assignReviewer2 = $currentReviewer2 !== '' ? $currentReviewer2 : $nextPair[1];
 
     
 
@@ -195,18 +166,32 @@ try {
     }
     $updateData[(string) $appStatusQid] = 'already_assigned';
 
-    $editResult = $client->editSubmission($targetSubmission['id'], $updateData);
+    // Debug: print all submissions' ApplicationID, Reviewer1, Reviewer2
+    echo "All submissions (AppID | R1 | R2):\n";
+    foreach ($allSubmissions as $sub) {
+        if (!isset($sub['answers'])) continue;
+        $subAppId = $sub['answers'][$appIdQid]['answer']     ?? '';
+        $subRev1  = $sub['answers'][$reviewer1Qid]['answer'] ?? '';
+        $subRev2  = $sub['answers'][$reviewer2Qid]['answer'] ?? '';
+        echo "  AppID={$subAppId} | R1={$subRev1} | R2={$subRev2}\n";
+    }
 
-    json_response([
-        'status' => 'success',
-        'application_id' => $applicationId,
-        'target_form_id' => $targetFormId,
-        'target_submission_id' => $targetSubmission['id'],
-        'reviewer1' => $assignReviewer1,
-        'reviewer2' => $assignReviewer2,
-        'reviewer_load' => $reviewerCounts,
-        'edit_result' => $editResult,
-    ]);
+    // Debug: print the new values about to be written
+    echo "\nAbout to editSubmission => AppID={$applicationId} | R1={$assignReviewer1} | R2={$assignReviewer2}\n\n";
+
+    // $editResult = $client->editSubmission($targetSubmission['id'], $updateData);
+
+    // json_response([
+    //     'status' => 'success',
+    //     'application_id' => $applicationId,
+    //     'target_form_id' => $targetFormId,
+    //     'target_submission_id' => $targetSubmission['id'],
+    //     'reviewer1' => $assignReviewer1,
+    //     'reviewer2' => $assignReviewer2,
+    //     'pair_index' => $pairIndex,
+    //     'total_pairs' => count($pairs),
+    //     'edit_result' => $editResult,
+    // ]);
 
 } catch (Exception $e) {
     error_response($e->getMessage(), $e->getCode() ?: 500);
