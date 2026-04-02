@@ -64,12 +64,15 @@ try {
             if ($name === 'reviewer2') $reviewer2Qid = $qid;
             if ($name === 'applicationstatus') $appStatusQid = $qid;
             if ($name === 'applicationid') $appIdQid = $qid;
-            print $qid;
-            exit;
             
             //if (stripos($answer['text'] ?? '', 'Application ID') !== false) $appIdQid = $qid;
         }
-       
+
+        $val = $sub['answers'][$appIdQid]['answer'];
+        print $appIdQid."\n";
+        print $val;
+        exit;
+
         // Check if this is our target submission
         if ($appIdQid !== null) {
             $val = $sub['answers'][$appIdQid]['answer'] ?? '';
