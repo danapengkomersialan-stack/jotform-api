@@ -69,17 +69,14 @@ try {
         }
 
         $val = $sub['answers'][$appIdQid]['answer'];
-        print $appIdQid."\n";
-        print $val;
-        exit;
-
+       
         // Check if this is our target submission
-        if ($appIdQid !== null) {
-            $val = $sub['answers'][$appIdQid]['answer'] ?? '';
-            if (is_string($val) && strcasecmp($val, $applicationId) === 0) {
-                $targetSubmission = $sub;
-            }
-        }
+        // if ($appIdQid !== null) {
+        //     $val = $sub['answers'][$appIdQid]['answer'] ?? '';
+        //     if (is_string($val) && strcasecmp($val, $applicationId) === 0) {
+        //         $targetSubmission = $sub;
+        //     }
+        // }
 
         // Stop scanning once we have all QIDs
         if ($reviewer1Qid !== null && $reviewer2Qid !== null && $appStatusQid !== null && $appIdQid !== null && $targetSubmission !== null) {
@@ -95,9 +92,9 @@ try {
         error_response('Could not find applicationStatus field in the main table', 404);
     }
 
-    if (!$targetSubmission) {
-        error_response("No submission found in main table with Application ID = {$applicationId}", 404);
-    }
+    // if (!$targetSubmission) {
+    //     error_response("No submission found in main table with Application ID = {$applicationId}", 404);
+    // }
 
     // =========================================================================
     // 3. Verify the target submission has applicationStatus = "Submitted"
